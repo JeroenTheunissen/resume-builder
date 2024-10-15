@@ -1,7 +1,11 @@
 export interface PersonalDetails {
+  professionalTitle: string;
   name: string;
   email: string;
   phone: string;
+  website: string;
+  linkedinHandle: string;
+  city: string;
 }
 
 export interface WorkExperience {
@@ -27,12 +31,7 @@ export interface Certificate {
   name: string;
 }
 
-export type LanguageProficiency =
-  | 'Native'
-  | 'Full Professional'
-  | 'Professional'
-  | 'Limited'
-  | 'Basic';
+export type LanguageProficiency = 'Native' | 'Full Professional' | 'Professional' | 'Limited' | 'Basic';
 
 export interface Language {
   name: string;

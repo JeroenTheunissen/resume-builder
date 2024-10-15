@@ -10,12 +10,7 @@ interface WorkExperienceFormProps {
   addWorkExperience: () => void;
 }
 
-const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
-  workExperience,
-  onChange,
-  onDateChange,
-  addWorkExperience,
-}) => {
+const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({ workExperience, onChange, onDateChange, addWorkExperience }) => {
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">Work Experience</h2>
@@ -41,7 +36,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
             <DatePicker
               selected={experience.startDate}
               onChange={(date) => onDateChange(date, index, 'startDate')}
-              dateFormat="dd-MM-yyyy"
+              dateFormat="MMMM-yyyy"
               placeholderText="Start Date"
               className="w-full p-2 border rounded"
               showYearDropdown
@@ -50,7 +45,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
             <DatePicker
               selected={experience.endDate}
               onChange={(date) => onDateChange(date, index, 'startDate')}
-              dateFormat="dd-MM-yyyy"
+              dateFormat="MMMM-yyyy"
               placeholderText="End Date"
               className="w-full p-2 border rounded"
               showYearDropdown
@@ -67,11 +62,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
         </div>
       ))}
 
-      <button
-        type="button"
-        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
-        onClick={addWorkExperience}
-      >
+      <button type="button" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition" onClick={addWorkExperience}>
         Add Work Experience
       </button>
     </div>

@@ -15,9 +15,17 @@ const App: React.FC = () => {
   const reactToPrintFn = useReactToPrint({ contentRef });
 
   const [isLoading, setIsLoading] = useState(true);
+  const [showSimpleTemplate, setShowSimpleTemplate] = useState(false);
+  const [selectedFont, setSelectedFont] = useState('Arial');
+
+  const handleFontChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedFont(e.target.value);
+  };
+
+  const fontOptions = ['Arial', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana', 'Tahoma', 'Roboto'];
 
   const [resumeData, setResumeData] = useState<ResumeData>({
-    personalDetails: { name: '', email: '', phone: '' },
+    personalDetails: { name: '', email: '', phone: '', website: '', linkedinHandle: '', city: '', professionalTitle: '' },
     summary: '',
     workExperience: [{ company: '', position: '', startDate: null, endDate: null, description: '' }],
     education: [{ institution: '', startDate: null, endDate: null, description: '' }],
@@ -25,6 +33,10 @@ const App: React.FC = () => {
     skills: [{ name: '' }],
     languages: [{ name: '', proficiency: 'Basic' }],
   });
+
+  const toggleTemplate = () => {
+    setShowSimpleTemplate(!showSimpleTemplate);
+  };
 
   const handlePersonalDetailsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setResumeData({
@@ -58,25 +70,18 @@ const App: React.FC = () => {
   const addWorkExperience = () => {
     setResumeData({
       ...resumeData,
-      workExperience: [
-        ...resumeData.workExperience,
-        { company: '', position: '', startDate: null, endDate: null, description: '' },
-      ],
+      workExperience: [...resumeData.workExperience, { company: '', position: '', startDate: null, endDate: null, description: '' }],
     });
   };
 
   const handleEducationDateChange = (date: Date | null, index: number, field: string) => {
-    const updatedEducation = resumeData.education.map((education, i) =>
-      i === index ? { ...education, [field]: date } : education,
-    );
+    const updatedEducation = resumeData.education.map((education, i) => (i === index ? { ...education, [field]: date } : education));
     setResumeData({ ...resumeData, education: updatedEducation });
   };
 
   const handleEducationChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
     const { name, value } = e.target;
-    const updatedEducation = resumeData.education.map((education, i) =>
-      i === index ? { ...education, [name]: value } : education,
-    );
+    const updatedEducation = resumeData.education.map((education, i) => (i === index ? { ...education, [name]: value } : education));
     setResumeData({ ...resumeData, education: updatedEducation });
   };
 
@@ -102,9 +107,7 @@ const App: React.FC = () => {
   };
 
   const handleSkillChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const updatedSkills = resumeData.skills.map((skill, i) =>
-      i === index ? { ...skill, name: e.target.value } : skill,
-    );
+    const updatedSkills = resumeData.skills.map((skill, i) => (i === index ? { ...skill, name: e.target.value } : skill));
     setResumeData({ ...resumeData, skills: updatedSkills });
   };
 
@@ -116,9 +119,7 @@ const App: React.FC = () => {
   };
 
   const handleLanguageChange = (index: number, field: string, value: string) => {
-    const updatedLanguages = resumeData.languages.map((language, i) =>
-      i === index ? { ...language, [field]: value } : language,
-    );
+    const updatedLanguages = resumeData.languages.map((language, i) => (i === index ? { ...language, [field]: value } : language));
     setResumeData({ ...resumeData, languages: updatedLanguages });
   };
 
@@ -201,56 +202,68 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold mb-6 text-center">Resume Builder</h1>
+      <button type="button" className="bg-blue-500 text-white py-2 px-4 mb-3 rounded hover:bg-blue-600 transition" onClick={toggleTemplate}>
+        {showSimpleTemplate ? 'Hide Resume Template' : 'Show Resume Template'}
+      </button>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <form className="bg-white p-6 rounded-lg shadow-md space-y-6">
-          <PersonalDetailsForm
-            name={resumeData.personalDetails.name}
-            email={resumeData.personalDetails.email}
-            phone={resumeData.personalDetails.phone}
-            onChange={handlePersonalDetailsChange}
-          />
-          <SummaryForm onChange={handleSummary} summary={resumeData.summary} />
+      <div className="flex justify-center">
+        {!showSimpleTemplate && (
+          <form className="bg-white p-6 rounded-lg shadow-md space-y-6 md:w-[850px]">
+            <PersonalDetailsForm personalDetails={resumeData.personalDetails} onChange={handlePersonalDetailsChange} />
+            <SummaryForm onChange={handleSummary} summary={resumeData.summary} />
 
-          <WorkExperienceForm
-            onChange={handleWorkExperienceChange}
-            onDateChange={handleWorkExperienceDateChange}
-            workExperience={resumeData.workExperience}
-            addWorkExperience={addWorkExperience}
-          />
+            <WorkExperienceForm
+              onChange={handleWorkExperienceChange}
+              onDateChange={handleWorkExperienceDateChange}
+              workExperience={resumeData.workExperience}
+              addWorkExperience={addWorkExperience}
+            />
 
-          <EducationForm
-            onChange={handleEducationChange}
-            onDateChange={handleEducationDateChange}
-            education={resumeData.education}
-            addEducation={addEducation}
-          />
+            <EducationForm
+              onChange={handleEducationChange}
+              onDateChange={handleEducationDateChange}
+              education={resumeData.education}
+              addEducation={addEducation}
+            />
 
-          <CertificatesForm
-            onChange={handleCertificatesChange}
-            certificates={resumeData.certificates}
-            addCertificate={addCertificate}
-          />
+            <CertificatesForm onChange={handleCertificatesChange} certificates={resumeData.certificates} addCertificate={addCertificate} />
 
-          <SkillsForm onChange={handleSkillChange} addSkill={addSkill} skills={resumeData.skills} />
+            <SkillsForm onChange={handleSkillChange} addSkill={addSkill} skills={resumeData.skills} />
 
-          <LanguagesForm onChange={handleLanguageChange} addLanguage={addLanguage} languages={resumeData.languages} />
-          <button
-            type="button"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
-            onClick={() => {
-              if (validateForm()) {
-                reactToPrintFn();
-              }
-            }}
-          >
-            Export as PDF
-          </button>
-        </form>
+            <LanguagesForm onChange={handleLanguageChange} addLanguage={addLanguage} languages={resumeData.languages} />
+          </form>
+        )}
 
-        <div ref={contentRef} className="bg-gray-50 p-6 rounded-lg shadow-md">
-          <SimpleResume resumeData={resumeData} />
-        </div>
+        {showSimpleTemplate && (
+          <div>
+            <button
+              type="button"
+              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+              onClick={() => {
+                if (validateForm()) {
+                  reactToPrintFn();
+                }
+              }}
+            >
+              Export as PDF
+            </button>
+            <div className="mb-4">
+              <label htmlFor="font" className="mr-2 font-bold">
+                Choose Font:
+              </label>
+              <select id="font" value={selectedFont} onChange={handleFontChange} className="p-2 border rounded">
+                {fontOptions.map((font) => (
+                  <option key={font} value={font}>
+                    {font}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div ref={contentRef}>
+              <SimpleResume selectedFont={selectedFont} resumeData={resumeData} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
